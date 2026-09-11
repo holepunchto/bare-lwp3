@@ -1,0 +1,33 @@
+{
+  "name": "bare-lwp3",
+  "version": "0.1.0",
+  "description": "LEGO Wireless Protocol 3 codec",
+  "exports": {
+    "./package": "./package.json",
+    ".": "./index.js"
+  },
+  "files": [
+    "index.js"
+  ],
+  "scripts": {
+    "format": "prettier --write . && lunte --fix",
+    "lint": "prettier --check . && lunte",
+    "test": "brittle-bare --coverage test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/holepunchto/bare-lwp3.git"
+  },
+  "author": "Tony Gorez",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/holepunchto/bare-lwp3/issues"
+  },
+  "homepage": "https://github.com/holepunchto/bare-lwp3#readme",
+  "devDependencies": {
+    "brittle": "^3.3.2",
+    "lunte": "^1.7.0",
+    "prettier": "^3.9.1",
+    "prettier-config-holepunch": "^2.0.0"
+  }
+}

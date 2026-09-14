@@ -1,3 +1,6 @@
+> [!IMPORTANT]
+> This module is experimental. The API is subject to change and may break at any time.
+
 # bare-lwp3
 
 LEGO Wireless Protocol 3 (Powered Up) codec. Pure functions: commands in, bytes out; hub notification bytes in, plain objects out. No Bluetooth inside - bring your own transport, for example [bare-bluetooth](https://github.com/holepunchto/bare-bluetooth).

@@ -67,27 +67,53 @@ exports.switchOff = function switchOff() {
   return Uint8Array.from([0x04, 0x00, 0x02, 0x01])
 }
 
+const types = {
+  HUB_PROPERTY: 0x01,
+  ATTACHED_IO: 0x04,
+  ERROR: 0x05,
+  PORT_VALUE: 0x45,
+  FEEDBACK: 0x82
+}
+
+const errorCodes = {
+  0x01: 'ack',
+  0x02: 'mack',
+  0x03: 'bufferOverflow',
+  0x04: 'timeout',
+  0x05: 'notRecognized',
+  0x06: 'invalidUse',
+  0x07: 'overcurrent',
+  0x08: 'internalError'
+}
+
 exports.decode = function decode(message) {
   const view = new DataView(message.buffer, message.byteOffset, message.byteLength)
   switch (message[2]) {
-    case 0x01:
+    case types.HUB_PROPERTY:
       return message[3] === 0x06
         ? { type: 'battery', level: message[5] }
         : { type: 'hubProperty', property: message[3] }
-    case 0x04:
+    case types.ERROR:
+      return {
+        type: 'error',
+        command: message[3],
+        code: message[4],
+        reason: errorCodes[message[4]] ?? 'unknown'
+      }
+    case types.ATTACHED_IO:
       return {
         type: 'attachedIo',
         port: message[3],
         event: message[4],
         ioType: message[4] === 0x00 ? 0 : message[5] | (message[6] << 8)
       }
-    case 0x45:
+    case types.PORT_VALUE:
       return {
         type: 'portValue',
         port: message[3],
         value: message.byteLength >= 8 ? view.getInt32(4, true) : message[4]
       }
-    case 0x82:
+    case types.FEEDBACK:
       return { type: 'feedback', port: message[3], status: message[4] }
     default:
       return { type: 'unknown', id: message[2] }

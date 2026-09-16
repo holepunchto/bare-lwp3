@@ -67,6 +67,17 @@ exports.switchOff = function switchOff() {
   return Uint8Array.from([0x04, 0x00, 0x02, 0x01])
 }
 
+const errorCodes = {
+  0x01: 'ack',
+  0x02: 'mack',
+  0x03: 'bufferOverflow',
+  0x04: 'timeout',
+  0x05: 'notRecognized',
+  0x06: 'invalidUse',
+  0x07: 'overcurrent',
+  0x08: 'internalError'
+}
+
 exports.decode = function decode(message) {
   const view = new DataView(message.buffer, message.byteOffset, message.byteLength)
   switch (message[2]) {
@@ -74,6 +85,13 @@ exports.decode = function decode(message) {
       return message[3] === 0x06
         ? { type: 'battery', level: message[5] }
         : { type: 'hubProperty', property: message[3] }
+    case 0x05:
+      return {
+        type: 'error',
+        command: message[3],
+        code: message[4],
+        reason: errorCodes[message[4]] ?? 'unknown'
+      }
     case 0x04:
       return {
         type: 'attachedIo',

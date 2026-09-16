@@ -115,6 +115,24 @@ test('decode feedback', (t) => {
   })
 })
 
+test('decode error', (t) => {
+  t.alike(lwp3.decode(Uint8Array.from([0x05, 0x00, 0x05, 0x81, 0x05])), {
+    type: 'error',
+    command: 0x81,
+    code: 0x05,
+    reason: 'notRecognized'
+  })
+})
+
+test('decode error unknown code', (t) => {
+  t.alike(lwp3.decode(Uint8Array.from([0x05, 0x00, 0x05, 0x81, 0x99])), {
+    type: 'error',
+    command: 0x81,
+    code: 0x99,
+    reason: 'unknown'
+  })
+})
+
 test('decode unknown', (t) => {
   t.alike(lwp3.decode(Uint8Array.from([0x03, 0x00, 0x99])), { type: 'unknown', id: 0x99 })
 })

@@ -42,6 +42,7 @@ Encoders return a `Uint8Array` ready to write to the LWP3 characteristic.
 - `{ type: 'attachedIo', port, event, ioType }` - device plugged (`event` 1) or unplugged (0)
 - `{ type: 'portValue', port, value }` - subscribed sensor value, e.g. motor position
 - `{ type: 'feedback', port, status }` - command progress report
+- `{ type: 'error', command, code, reason }` - hub rejected `command`; `code` is the raw byte, `reason` names it (`'notRecognized'`, `'invalidUse'`, `'overcurrent'`, ..., `'unknown'`)
 - `{ type: 'hubProperty', property }` / `{ type: 'unknown', id }` - anything not decoded yet
 
 Ports are `PORT_A` to `PORT_D`. Tested on the LEGO(R) Technic hub (88012); the LEGO Group publishes the protocol under the MIT license at [lego.github.io/lego-ble-wireless-protocol-docs](https://lego.github.io/lego-ble-wireless-protocol-docs/). See [bare-lwp3-demo](https://github.com/tony-go/bare-lwp3-demo) for a complete example.

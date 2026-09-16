@@ -63,9 +63,13 @@ Split a virtual port back into its two motors.
 
 Run the two motors of a virtual port, synchronized by the hub.
 
-#### `const message = subscribePosition(port)`
+#### `const message = subscribe(port, mode)`
 
-Ask the hub to report the motor position on every change.
+Ask the hub to report a sensor mode on every change. Motor modes are `MODE_SPEED`, `MODE_POSITION` and `MODE_ABSOLUTE_POSITION`.
+
+#### `const message = unsubscribe(port, mode)`
+
+Stop the reports for a mode.
 
 #### `const message = requestBattery()`
 

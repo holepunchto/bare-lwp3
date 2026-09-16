@@ -62,6 +62,28 @@ test('gotoAbsolutePosition', (t) => {
   )
 })
 
+test('connectVirtualPort', (t) => {
+  t.alike(
+    bytes(lwp3.connectVirtualPort(lwp3.PORT_A, lwp3.PORT_B)),
+    [0x06, 0x00, 0x61, 0x01, 0x00, 0x01]
+  )
+})
+
+test('disconnectVirtualPort', (t) => {
+  t.alike(bytes(lwp3.disconnectVirtualPort(0x10)), [0x05, 0x00, 0x61, 0x00, 0x10])
+})
+
+test('startSpeeds', (t) => {
+  t.alike(
+    bytes(lwp3.startSpeeds(0x10, 50, 50)),
+    [0x0a, 0x00, 0x81, 0x10, 0x11, 0x08, 0x32, 0x32, 0x64, 0x00]
+  )
+  t.alike(
+    bytes(lwp3.startSpeeds(0x10, 50, -50)),
+    [0x0a, 0x00, 0x81, 0x10, 0x11, 0x08, 0x32, 0xce, 0x64, 0x00]
+  )
+})
+
 test('subscribePosition', (t) => {
   t.alike(
     bytes(lwp3.subscribePosition(lwp3.PORT_D)),
@@ -102,6 +124,16 @@ test('decode attached io', (t) => {
     ),
     { type: 'attachedIo', port: lwp3.PORT_A, event: 0x01, ioType: 46 }
   )
+})
+
+test('decode attached virtual io', (t) => {
+  t.alike(lwp3.decode(Uint8Array.from([0x09, 0x00, 0x04, 0x10, 0x02, 0x2e, 0x00, 0x00, 0x01])), {
+    type: 'attachedIo',
+    port: 0x10,
+    event: 0x02,
+    ioType: 46,
+    ports: [lwp3.PORT_A, lwp3.PORT_B]
+  })
 })
 
 test('decode detached io', (t) => {

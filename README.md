@@ -25,23 +25,63 @@ Scan for `lwp3.SERVICE_UUID` and write every message to `lwp3.CHARACTERISTIC_UUI
 
 ## API
 
-Encoders return a `Uint8Array` ready to write to the LWP3 characteristic.
+Encoders return a `Uint8Array` ready to write to the LWP3 characteristic. Ports are `PORT_A` to `PORT_D`.
 
-- `startSpeed(port, speed)` - run a motor at a regulated speed, -100 to 100
-- `startPower(port, power)` - raw PWM power, -100 to 100, 0 floats
-- `brake(port)` - actively brake a motor
-- `startSpeedForTime(port, ms, speed)` - run at a regulated speed for `ms` milliseconds, then brake
-- `startSpeedForDegrees(port, degrees, speed)` - turn `degrees` in the direction of `speed`, then brake
-- `gotoAbsolutePosition(port, position, speed)` - turn a motor to an angle in degrees and hold
-- `connectVirtualPort(portA, portB)` - pair two motors into one virtual port; the hub replies with `attachedIo` (`event` 2) carrying the new port id
-- `disconnectVirtualPort(port)` - split a virtual port back into its two motors
-- `startSpeeds(port, speedA, speedB)` - run the two motors of a virtual port, synchronized by the hub
-- `subscribePosition(port)` - ask the hub to report the motor position on every change
-- `requestBattery()` - ask for the battery level
-- `led(color)` - set the hub LED (`LED_OFF`, `LED_PINK`, `LED_PURPLE`, `LED_BLUE`, `LED_LIGHT_BLUE`, `LED_CYAN`, `LED_GREEN`, `LED_YELLOW`, `LED_ORANGE`, `LED_RED`, `LED_WHITE`)
-- `switchOff()` - power the hub down
+#### `const message = startSpeed(port, speed)`
 
-`decode(bytes)` turns a hub notification into one of:
+Run a motor at a regulated speed, `-100` to `100`.
+
+#### `const message = startPower(port, power)`
+
+Drive a motor with raw PWM power, `-100` to `100`. `0` lets the motor float.
+
+#### `const message = brake(port)`
+
+Actively brake a motor.
+
+#### `const message = startSpeedForTime(port, ms, speed)`
+
+Run at a regulated speed for `ms` milliseconds, then brake. The hub handles the timing.
+
+#### `const message = startSpeedForDegrees(port, degrees, speed)`
+
+Turn `degrees` in the direction of `speed`, then brake.
+
+#### `const message = gotoAbsolutePosition(port, position, speed)`
+
+Turn a motor to an angle in degrees and hold.
+
+#### `const message = connectVirtualPort(portA, portB)`
+
+Pair two motors into one virtual port. The hub replies with `attachedIo` (`event` 2) carrying the new port id.
+
+#### `const message = disconnectVirtualPort(port)`
+
+Split a virtual port back into its two motors.
+
+#### `const message = startSpeeds(port, speedA, speedB)`
+
+Run the two motors of a virtual port, synchronized by the hub.
+
+#### `const message = subscribePosition(port)`
+
+Ask the hub to report the motor position on every change.
+
+#### `const message = requestBattery()`
+
+Ask for the battery level.
+
+#### `const message = led(color)`
+
+Set the hub LED (`LED_OFF`, `LED_PINK`, `LED_PURPLE`, `LED_BLUE`, `LED_LIGHT_BLUE`, `LED_CYAN`, `LED_GREEN`, `LED_YELLOW`, `LED_ORANGE`, `LED_RED`, `LED_WHITE`).
+
+#### `const message = switchOff()`
+
+Power the hub down.
+
+#### `const notification = decode(bytes)`
+
+Turn a hub notification into one of:
 
 - `{ type: 'battery', level }` - percentage
 - `{ type: 'attachedIo', port, event, ioType }` - device plugged (`event` 1) or unplugged (0); virtual port formed (`event` 2) adds `ports`, the two members
@@ -50,7 +90,7 @@ Encoders return a `Uint8Array` ready to write to the LWP3 characteristic.
 - `{ type: 'error', command, code, reason }` - hub rejected `command`; `code` is the raw byte, `reason` names it (`'notRecognized'`, `'invalidUse'`, `'overcurrent'`, ..., `'unknown'`)
 - `{ type: 'hubProperty', property }` / `{ type: 'unknown', id }` - anything not decoded yet
 
-Ports are `PORT_A` to `PORT_D`. Tested on the LEGO(R) Technic hub (88012); the LEGO Group publishes the protocol under the MIT license at [lego.github.io/lego-ble-wireless-protocol-docs](https://lego.github.io/lego-ble-wireless-protocol-docs/). See [bare-lwp3-demo](https://github.com/tony-go/bare-lwp3-demo) for a complete example.
+Tested on the LEGO(R) Technic hub (88012); the LEGO Group publishes the protocol under the MIT license at [lego.github.io/lego-ble-wireless-protocol-docs](https://lego.github.io/lego-ble-wireless-protocol-docs/). See [bare-lwp3-demo](https://github.com/tony-go/bare-lwp3-demo) for a complete example.
 
 ## License
 

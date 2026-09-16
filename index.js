@@ -6,6 +6,10 @@ exports.PORT_B = 0x01
 exports.PORT_C = 0x02
 exports.PORT_D = 0x03
 
+exports.MODE_SPEED = 0x01
+exports.MODE_POSITION = 0x02
+exports.MODE_ABSOLUTE_POSITION = 0x03
+
 exports.LED_OFF = 0x00
 exports.LED_PINK = 0x01
 exports.LED_PURPLE = 0x02
@@ -112,8 +116,12 @@ exports.startSpeeds = function startSpeeds(port, speedA, speedB) {
   ])
 }
 
-exports.subscribePosition = function subscribePosition(port) {
-  return Uint8Array.from([0x0a, 0x00, 0x41, port, 0x02, 0x01, 0x00, 0x00, 0x00, 0x01])
+exports.subscribe = function subscribe(port, mode) {
+  return Uint8Array.from([0x0a, 0x00, 0x41, port, mode, 0x01, 0x00, 0x00, 0x00, 0x01])
+}
+
+exports.unsubscribe = function unsubscribe(port, mode) {
+  return Uint8Array.from([0x0a, 0x00, 0x41, port, mode, 0x01, 0x00, 0x00, 0x00, 0x00])
 }
 
 exports.requestBattery = function requestBattery() {
@@ -181,7 +189,12 @@ exports.decode = function decode(message) {
       return {
         type: 'portValue',
         port: message[3],
-        value: message.byteLength >= 8 ? view.getInt32(4, true) : message[4]
+        value:
+          message.byteLength >= 8
+            ? view.getInt32(4, true)
+            : message.byteLength >= 6
+              ? view.getInt16(4, true)
+              : view.getInt8(4)
       }
     case types.FEEDBACK:
       return { type: 'feedback', port: message[3], status: message[4] }

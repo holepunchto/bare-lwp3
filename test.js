@@ -84,10 +84,17 @@ test('startSpeeds', (t) => {
   )
 })
 
-test('subscribePosition', (t) => {
+test('subscribe', (t) => {
   t.alike(
-    bytes(lwp3.subscribePosition(lwp3.PORT_D)),
-    [0x0a, 0x00, 0x41, 0x03, 0x02, 0x01, 0x00, 0x00, 0x00, 0x01]
+    bytes(lwp3.subscribe(lwp3.PORT_A, lwp3.MODE_SPEED)),
+    [0x0a, 0x00, 0x41, 0x00, 0x01, 0x01, 0x00, 0x00, 0x00, 0x01]
+  )
+})
+
+test('unsubscribe', (t) => {
+  t.alike(
+    bytes(lwp3.unsubscribe(lwp3.PORT_A, lwp3.MODE_SPEED)),
+    [0x0a, 0x00, 0x41, 0x00, 0x01, 0x01, 0x00, 0x00, 0x00, 0x00]
   )
 })
 
@@ -158,6 +165,22 @@ test('decode short port value', (t) => {
     type: 'portValue',
     port: lwp3.PORT_D,
     value: 7
+  })
+})
+
+test('decode negative short port value', (t) => {
+  t.alike(lwp3.decode(Uint8Array.from([0x05, 0x00, 0x45, 0x00, 0xce])), {
+    type: 'portValue',
+    port: lwp3.PORT_A,
+    value: -50
+  })
+})
+
+test('decode int16 port value', (t) => {
+  t.alike(lwp3.decode(Uint8Array.from([0x06, 0x00, 0x45, 0x00, 0xd4, 0xfe])), {
+    type: 'portValue',
+    port: lwp3.PORT_A,
+    value: -300
   })
 })
 

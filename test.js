@@ -102,8 +102,19 @@ test('requestBattery', (t) => {
   t.alike(bytes(lwp3.requestBattery()), [0x05, 0x00, 0x01, 0x06, 0x05])
 })
 
+test('subscribeBattery', (t) => {
+  t.alike(bytes(lwp3.subscribeBattery()), [0x05, 0x00, 0x01, 0x06, 0x02])
+})
+
+test('unsubscribeBattery', (t) => {
+  t.alike(bytes(lwp3.unsubscribeBattery()), [0x05, 0x00, 0x01, 0x06, 0x03])
+})
+
 test('led', (t) => {
-  t.alike(bytes(lwp3.led(lwp3.LED_GREEN)), [0x08, 0x00, 0x81, 0x32, 0x11, 0x51, 0x00, 0x06])
+  t.alike(
+    bytes(lwp3.led(lwp3.LED_PORT, lwp3.LED_GREEN)),
+    [0x08, 0x00, 0x81, 0x32, 0x11, 0x51, 0x00, 0x06]
+  )
 })
 
 test('switchOff', (t) => {

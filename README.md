@@ -73,11 +73,19 @@ Stop the reports for a mode.
 
 #### `const message = requestBattery()`
 
-Ask for the battery level.
+Ask for the battery level once.
 
-#### `const message = led(color)`
+#### `const message = subscribeBattery()`
 
-Set the hub LED (`LED_OFF`, `LED_PINK`, `LED_PURPLE`, `LED_BLUE`, `LED_LIGHT_BLUE`, `LED_CYAN`, `LED_GREEN`, `LED_YELLOW`, `LED_ORANGE`, `LED_RED`, `LED_WHITE`).
+Ask the hub to report the battery level on every change.
+
+#### `const message = unsubscribeBattery()`
+
+Stop the battery reports.
+
+#### `const message = led(port, color)`
+
+Set a hub LED (`LED_OFF`, `LED_PINK`, `LED_PURPLE`, `LED_BLUE`, `LED_LIGHT_BLUE`, `LED_CYAN`, `LED_GREEN`, `LED_YELLOW`, `LED_ORANGE`, `LED_RED`, `LED_WHITE`). `LED_PORT` is the built-in LED of the Technic hub; other hubs report theirs via `attachedIo`.
 
 #### `const message = switchOff()`
 

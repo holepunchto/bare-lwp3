@@ -30,6 +30,8 @@ Encoders return a `Uint8Array` ready to write to the LWP3 characteristic.
 - `startSpeed(port, speed)` - run a motor at a regulated speed, -100 to 100
 - `startPower(port, power)` - raw PWM power, -100 to 100, 0 floats
 - `brake(port)` - actively brake a motor
+- `startSpeedForTime(port, ms, speed)` - run at a regulated speed for `ms` milliseconds, then brake
+- `startSpeedForDegrees(port, degrees, speed)` - turn `degrees` in the direction of `speed`, then brake
 - `gotoAbsolutePosition(port, position, speed)` - turn a motor to an angle in degrees and hold
 - `subscribePosition(port)` - ask the hub to report the motor position on every change
 - `requestBattery()` - ask for the battery level

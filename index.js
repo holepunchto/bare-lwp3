@@ -30,6 +30,44 @@ exports.brake = function brake(port) {
   return exports.startPower(port, 0x7f)
 }
 
+exports.startSpeedForTime = function startSpeedForTime(port, ms, speed) {
+  return Uint8Array.from([
+    0x0c,
+    0x00,
+    0x81,
+    port,
+    0x11,
+    0x09,
+    ms & 0xff,
+    (ms >> 8) & 0xff,
+    speed & 0xff,
+    0x64,
+    0x7f,
+    0x00
+  ])
+}
+
+exports.startSpeedForDegrees = function startSpeedForDegrees(port, degrees, speed) {
+  const message = Uint8Array.from([
+    0x0e,
+    0x00,
+    0x81,
+    port,
+    0x11,
+    0x0b,
+    0x00,
+    0x00,
+    0x00,
+    0x00,
+    speed & 0xff,
+    0x64,
+    0x7f,
+    0x00
+  ])
+  new DataView(message.buffer).setUint32(6, degrees, true)
+  return message
+}
+
 exports.gotoAbsolutePosition = function gotoAbsolutePosition(port, position, speed) {
   const message = Uint8Array.from([
     0x0e,

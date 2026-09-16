@@ -89,6 +89,29 @@ exports.gotoAbsolutePosition = function gotoAbsolutePosition(port, position, spe
   return message
 }
 
+exports.connectVirtualPort = function connectVirtualPort(portA, portB) {
+  return Uint8Array.from([0x06, 0x00, 0x61, 0x01, portA, portB])
+}
+
+exports.disconnectVirtualPort = function disconnectVirtualPort(port) {
+  return Uint8Array.from([0x05, 0x00, 0x61, 0x00, port])
+}
+
+exports.startSpeeds = function startSpeeds(port, speedA, speedB) {
+  return Uint8Array.from([
+    0x0a,
+    0x00,
+    0x81,
+    port,
+    0x11,
+    0x08,
+    speedA & 0xff,
+    speedB & 0xff,
+    0x64,
+    0x00
+  ])
+}
+
 exports.subscribePosition = function subscribePosition(port) {
   return Uint8Array.from([0x0a, 0x00, 0x41, port, 0x02, 0x01, 0x00, 0x00, 0x00, 0x01])
 }
@@ -111,6 +134,12 @@ const types = {
   ERROR: 0x05,
   PORT_VALUE: 0x45,
   FEEDBACK: 0x82
+}
+
+const ioEvents = {
+  DETACHED: 0x00,
+  ATTACHED: 0x01,
+  ATTACHED_VIRTUAL: 0x02
 }
 
 const errorCodes = {
@@ -138,13 +167,16 @@ exports.decode = function decode(message) {
         code: message[4],
         reason: errorCodes[message[4]] ?? 'unknown'
       }
-    case types.ATTACHED_IO:
-      return {
+    case types.ATTACHED_IO: {
+      const io = {
         type: 'attachedIo',
         port: message[3],
         event: message[4],
-        ioType: message[4] === 0x00 ? 0 : message[5] | (message[6] << 8)
+        ioType: message[4] === ioEvents.DETACHED ? 0 : message[5] | (message[6] << 8)
       }
+      if (message[4] === ioEvents.ATTACHED_VIRTUAL) io.ports = [message[7], message[8]]
+      return io
+    }
     case types.PORT_VALUE:
       return {
         type: 'portValue',

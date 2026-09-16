@@ -33,6 +33,9 @@ Encoders return a `Uint8Array` ready to write to the LWP3 characteristic.
 - `startSpeedForTime(port, ms, speed)` - run at a regulated speed for `ms` milliseconds, then brake
 - `startSpeedForDegrees(port, degrees, speed)` - turn `degrees` in the direction of `speed`, then brake
 - `gotoAbsolutePosition(port, position, speed)` - turn a motor to an angle in degrees and hold
+- `connectVirtualPort(portA, portB)` - pair two motors into one virtual port; the hub replies with `attachedIo` (`event` 2) carrying the new port id
+- `disconnectVirtualPort(port)` - split a virtual port back into its two motors
+- `startSpeeds(port, speedA, speedB)` - run the two motors of a virtual port, synchronized by the hub
 - `subscribePosition(port)` - ask the hub to report the motor position on every change
 - `requestBattery()` - ask for the battery level
 - `led(color)` - set the hub LED (`LED_OFF`, `LED_PINK`, `LED_PURPLE`, `LED_BLUE`, `LED_LIGHT_BLUE`, `LED_CYAN`, `LED_GREEN`, `LED_YELLOW`, `LED_ORANGE`, `LED_RED`, `LED_WHITE`)
@@ -41,7 +44,7 @@ Encoders return a `Uint8Array` ready to write to the LWP3 characteristic.
 `decode(bytes)` turns a hub notification into one of:
 
 - `{ type: 'battery', level }` - percentage
-- `{ type: 'attachedIo', port, event, ioType }` - device plugged (`event` 1) or unplugged (0)
+- `{ type: 'attachedIo', port, event, ioType }` - device plugged (`event` 1) or unplugged (0); virtual port formed (`event` 2) adds `ports`, the two members
 - `{ type: 'portValue', port, value }` - subscribed sensor value, e.g. motor position
 - `{ type: 'feedback', port, status }` - command progress report
 - `{ type: 'error', command, code, reason }` - hub rejected `command`; `code` is the raw byte, `reason` names it (`'notRecognized'`, `'invalidUse'`, `'overcurrent'`, ..., `'unknown'`)

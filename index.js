@@ -5,6 +5,7 @@ exports.PORT_A = 0x00
 exports.PORT_B = 0x01
 exports.PORT_C = 0x02
 exports.PORT_D = 0x03
+exports.LED_PORT = 0x32
 
 exports.MODE_SPEED = 0x01
 exports.MODE_POSITION = 0x02
@@ -128,8 +129,16 @@ exports.requestBattery = function requestBattery() {
   return Uint8Array.from([0x05, 0x00, 0x01, 0x06, 0x05])
 }
 
-exports.led = function led(color) {
-  return Uint8Array.from([0x08, 0x00, 0x81, 0x32, 0x11, 0x51, 0x00, color])
+exports.subscribeBattery = function subscribeBattery() {
+  return Uint8Array.from([0x05, 0x00, 0x01, 0x06, 0x02])
+}
+
+exports.unsubscribeBattery = function unsubscribeBattery() {
+  return Uint8Array.from([0x05, 0x00, 0x01, 0x06, 0x03])
+}
+
+exports.led = function led(port, color) {
+  return Uint8Array.from([0x08, 0x00, 0x81, port, 0x11, 0x51, 0x00, color])
 }
 
 exports.switchOff = function switchOff() {

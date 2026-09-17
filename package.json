@@ -1,6 +1,6 @@
 {
   "name": "bare-lwp3",
-  "version": "0.1.0",
+  "version": "0.0.0",
   "description": "LEGO Wireless Protocol 3 codec",
   "exports": {
     "./package": "./package.json",
